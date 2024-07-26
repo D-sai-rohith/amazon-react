@@ -1,0 +1,51 @@
+.logo{
+    height: 40px;
+}
+.mt-n300{
+    margin-top: -300px;
+    position: relative;
+    z-index: 243;
+}
+.w-90{
+    width: 90%;
+}
+.h-90{
+    height: 90%;
+}
+.box{
+    min-height: 390px !important;
+}
+.primary-navbar{
+    max-height: 65px;
+}
+.secondary-navbar{
+    max-height: 65px;
+}
+@media only screen and (max-width : 1250px){
+.mt-n300{
+    margin-top: -250px;
+}
+}
+@media only screen and (max-width : 1000px){
+    .mt-n300{
+        margin-top: -200px;
+    }
+}
+@media only screen and (max-width : 800px){
+    .mt-n300{
+        margin-top: -150px;
+    }
+}
+@media only screen and (max-width : 600px){
+    .mt-n300{
+        margin-top: -50px;
+    }
+}
+@media only screen and (max-width : 762px){
+    .adj{
+        margin-left: 20px;
+    }
+}
+::-webkit-scrollbar{
+ width:0px;
+}
