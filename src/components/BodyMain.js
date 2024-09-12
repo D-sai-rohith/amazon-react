@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const BodyMain = () => {
   return (
@@ -9,7 +10,8 @@ const BodyMain = () => {
             <h5>Upto 70% Off | Clearence Store</h5>
             <img class="w-90 h-100" src="https://images-eu.ssl-images-amazon.com/images/G/31/img22/Electronics/Clearance/Clearance_store_Desktop_CC_1x._SY304_CB628315133_.jpg"/>
             <h1 class="text-white mb-5"></h1>
-            <a href="#" class="text-decoration-none mt-5">see more</a>
+            <Link to={'/products'}>
+            <a href="#" class="text-decoration-none mt-5" >see more</a></Link>
             <h6 className='text-white'>jhg</h6>
         </div>
     </div>

@@ -1,13 +1,121 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from "../assets/images/logo.png"
 import { Search } from '@mui/icons-material'
 import Dropdown from 'react-bootstrap/Dropdown'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import india from "../assets/icons/flag.svg"
 import AddShoppingCartTwoToneIcon from '@mui/icons-material/AddShoppingCartTwoTone';
+import { Modal, ModalFooter } from 'react-bootstrap'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
 export const Navbar = () => {
+  const [show, setShow] = useState(false)
+  const [phoneNo,setPhoneNo] = useState()
+  const [password,setPassword] = useState()
+  const [showSign,setSign] = useState(false)
+ 
+  const [details,setDetails] = useState({Uname:'',
+    email:'',
+    password:null,
+    firstName:'',
+    lastName:'',
+    address:'',
+    phoneNumber:null
+  })
+
+
+  
+  const Login = async ()=>{
+    const formData = new FormData()
+    formData.append('phone_number',phoneNo)
+    formData.append('password',password)
+    const response =await axios.post('https://manojkoravangi.com/amazonapi/Select_user.php',formData)
+    if(response){
+      if(response.data){
+        console.log(response.data.msg)
+      }
+    }
+    setShow(false)
+  }
+  const signUp = async () => {
+      
+    //   setDetails(previous =>({
+    //     ...previous,password:123
+    //   }))
+    const formData = new FormData()
+    formData.append('username',details.Uname)
+    formData.append('email',details.email)
+    formData.append('password',details.password)
+    formData.append('first_name',details.firstName)
+    formData.append('last_name',details.lastName)
+    formData.append('address',details.address)
+    formData.append('phone_number',details.phoneNumber)
+    const response = await axios.post('https://manojkoravangi.com/amazonapi/insertuserdata.php',formData)
+    if(response)
+    {
+      console.log(response)
+    }
+    setSign(false)
+  }
   return (
     <div>
+      <Modal show={show} onHide={()=>setShow(false)}>
+        <Modal.Header closeButton>
+            Login
+        </Modal.Header>
+        <Modal.Body>
+        <div className='form-group'>
+            <label for='num'>Phone number</label>
+            <input type='number' className='form-control' id='num' placeholder='Enter Email' onChange={(e)=>{setPhoneNo(e.target.value)}}/>
+            <label for='pass'>Password</label>
+            <input type='password' className='form-control' id='pass' placeholder='Password' onChange={(e)=>{setPassword(e.target.value)}}/>
+         </div>
+        </Modal.Body>
+        <ModalFooter>
+          <button className='form-control btn btn-primary w-25' onClick={()=>{Login()}}>Login</button>
+        </ModalFooter>
+      </Modal>
+      <Modal show={showSign} onHide={()=>setSign(false)}>
+        <Modal.Header closeButton>
+            SignUp
+        </Modal.Header>
+        <Modal.Body>
+        <div className='form-group'>
+            <label >UserName</label>
+            <input type='text' className='form-control' onChange={(e)=>{setDetails(previous=>({
+              ...previous,Uname:e.target.value
+            }))}}/>
+            <label >Email</label>
+            <input type='eamil' className='form-control' onChange={(e)=>{setDetails(previous=>({
+              ...previous,email:e.target.value
+            }))}}/>
+            <label>Password</label>
+            <input type='password' className='form-control'onChange={(e)=>{setDetails(previous=>({
+              ...previous,password:e.target.value
+            }))}}/>
+            <label >FirstName</label>
+            <input type='text' className='form-control'onChange={(e)=>{setDetails(previous=>({
+              ...previous,firstName:e.target.value
+            }))}}/>
+            <label >LastName</label>
+            <input type='text' className='form-control' onChange={(e)=>{setDetails(previous=>({
+              ...previous,lastName:e.target.value
+            }))}}/>
+            <label >Address</label>
+            <input type='text' className='form-control'
+            onChange={(e)=>{setDetails(previous=>({
+              ...previous,address:e.target.value
+            }))}}/>
+            <label >Phone Number</label>
+            <input type='number' className='form-control' onChange={(e)=>{setDetails(previous=>({
+              ...previous,phoneNumber:e.target.value
+            }))}}/>
+         </div>
+        </Modal.Body>
+        <ModalFooter>
+          <button className='form-control btn btn-primary w-25' onClick={()=>{signUp()}}>Signup</button>
+        </ModalFooter>
+      </Modal>
           <div class="navbar primary-navbar d-flex flex-nowrap bg-dark container-fluid align-center">
             <img class="logo " src={logo}/>
             <div class="d-flex flex-row">
@@ -81,7 +189,6 @@ export const Navbar = () => {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item href="#/action-1">Your Account</Dropdown.Item>
         <Dropdown.Item href="#/action-2">Your Orders</Dropdown.Item>
         <Dropdown.Item href="#/action-3">Your Recommendations</Dropdown.Item>
         <Dropdown.Item href="#">Your Wishlist</Dropdown.Item>
@@ -89,13 +196,13 @@ export const Navbar = () => {
       
       </Dropdown.Menu>
     </Dropdown>
-            <div class="text-white d-none d-lg-block">
-                <p class="mb-1">Returns</p>
-                <h6><b>& Orders</b></h6>
+            <div class="text-white d-lg-block">
+                <button onClick={()=>setShow(true)}>Login</button>
+                <button onClick={()=>{setSign(true)}}>Signup</button>
             </div>
             <div class="text-white d-flex ">
                 <AddShoppingCartTwoToneIcon/>
-                <h6 class="d-none d-md-block adj1">Cart</h6>
+                <Link to={'/cart'} className='text-decoration-none me-2'>Cart</Link>
             </div>
         </div>
     </div>
