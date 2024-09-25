@@ -8,12 +8,16 @@ import AddShoppingCartTwoToneIcon from '@mui/icons-material/AddShoppingCartTwoTo
 import { Modal, ModalFooter } from 'react-bootstrap'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-export const Navbar = () => {
+import { CircularProgress } from '@mui/material'
+export const Navbar = ({number}) => {
   const [show, setShow] = useState(false)
   const [phoneNo,setPhoneNo] = useState()
   const [password,setPassword] = useState()
   const [showSign,setSign] = useState(false)
- 
+  const [clicked,setClicked] = useState(false)
+  const [message,setMessage] = useState('')
+  const [redirect,setRedirect] = useState(false)
+  const [showlogin,setShowLogin] = useState(localStorage.getItem('user_id'));
   const [details,setDetails] = useState({Uname:'',
     email:'',
     password:null,
@@ -24,18 +28,39 @@ export const Navbar = () => {
   })
 
 
-  
+ 
   const Login = async ()=>{
+    setClicked(true);
     const formData = new FormData()
-    formData.append('phone_number',phoneNo)
+    formData.append('email',phoneNo)
     formData.append('password',password)
-    const response =await axios.post('https://manojkoravangi.com/amazonapi/Select_user.php',formData)
+    const response =await axios.post('https://amazon.indianhackerslab.com/Select_user.php',formData)
     if(response){
       if(response.data){
-        console.log(response.data.msg)
+        if(response.data.status==="success")
+        { 
+          // console.log(response.data.data)
+          localStorage.setItem("user_id",response.data.data.user_id)
+          setShow(false)
+          setRedirect(true)
+          // setShowLogin(false)
+          
+          if(window.location.pathname==="/"){
+            window.location.replace("/account")
+          }
+          else{
+           
+            window.location.replace(window.location.pathname); 
+          }
+         
+        }
+        else{
+          setMessage("Invalid Credentials PLease check your email and password")
+        }
       }
     }
-    setShow(false)
+   
+    setClicked(false)
   }
   const signUp = async () => {
       
@@ -50,7 +75,7 @@ export const Navbar = () => {
     formData.append('last_name',details.lastName)
     formData.append('address',details.address)
     formData.append('phone_number',details.phoneNumber)
-    const response = await axios.post('https://manojkoravangi.com/amazonapi/insertuserdata.php',formData)
+    const response = await axios.post('https://amazon.indianhackerslab.com/insertuserdata.php',formData)
     if(response)
     {
       console.log(response)
@@ -59,20 +84,28 @@ export const Navbar = () => {
   }
   return (
     <div>
+        <Modal show={redirect} onHide={()=>setRedirect(false)}>
+      
+        <Modal.Body>
+       <p>You are Being redirected to your account.......</p>
+        </Modal.Body>
+        
+      </Modal>
       <Modal show={show} onHide={()=>setShow(false)}>
         <Modal.Header closeButton>
             Login
         </Modal.Header>
         <Modal.Body>
         <div className='form-group'>
-            <label for='num'>Phone number</label>
-            <input type='number' className='form-control' id='num' placeholder='Enter Email' onChange={(e)=>{setPhoneNo(e.target.value)}}/>
+            <label for='num'>Email </label>
+            <input type='email' className='form-control' id='num' placeholder='Enter Email' onChange={(e)=>{setPhoneNo(e.target.value)}}/>
             <label for='pass'>Password</label>
             <input type='password' className='form-control' id='pass' placeholder='Password' onChange={(e)=>{setPassword(e.target.value)}}/>
          </div>
+         <p className='text-danger'>{message}</p>
         </Modal.Body>
         <ModalFooter>
-          <button className='form-control btn btn-primary w-25' onClick={()=>{Login()}}>Login</button>
+          <button className='form-control btn btn-primary w-25' onClick={()=>{Login()}}>{clicked?<CircularProgress size={20} color='inherit'/>:"Login"}</button>
         </ModalFooter>
       </Modal>
       <Modal show={showSign} onHide={()=>setSign(false)}>
@@ -197,12 +230,16 @@ export const Navbar = () => {
       </Dropdown.Menu>
     </Dropdown>
             <div class="text-white d-lg-block">
-                <button onClick={()=>setShow(true)}>Login</button>
-                <button onClick={()=>{setSign(true)}}>Signup</button>
+              
+                {showlogin?<></>:
+                 <>
+                  <button className='btn btn-warning me-3' onClick={()=>setShow(true)}>Login</button>
+                  <button className='btn btn-success' onClick={()=>{setSign(true)}}>Signup</button></>}
+                  
             </div>
             <div class="text-white d-flex ">
-                <AddShoppingCartTwoToneIcon/>
-                <Link to={'/cart'} className='text-decoration-none me-2'>Cart</Link>
+                
+                <Link to={'/cart'} className='text-decoration-none me-2'><a className='text-light me-2 text-decoration-none'>{number}</a><AddShoppingCartTwoToneIcon/>Cart</Link>
             </div>
         </div>
     </div>
